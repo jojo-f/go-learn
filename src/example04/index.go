@@ -3,6 +3,8 @@ package example04
 import (
 	"fmt"
 	"math"
+	"math/rand"
+	"time"
 )
 
 func init() {
@@ -74,10 +76,43 @@ func init() {
 		0 ^ 0 -> 0
 	*/
 
-	fmt.Printf("%d \n", 010^101)
-	fmt.Printf("%d \n", 100^111)
-	fmt.Printf("%d \n", 101^110)
+	// 左位移 2 << n ==> 2 * 2的n次方
+	fmt.Printf("左位移 %d \n", 2<<4)
+	// 右位移 n >> 2 ==> 2的n次方 / 2
+	fmt.Printf("右位移 %d \n", 32>>2)
 
+	// 整数类型的除法运算只能得到整数 9/4 -> 2
+	// 取余运算符也只能作用于整数
+	// 整数除以0将会导致错误,浮点数除以0将会得到一个无穷
+	// fmt.Printf("求余:9.1%9= %d \n", 9.0%9) // invalid operation: operator % not defined on untyped float
+
+	// 随机数,go的rand 包实现了伪随机数基于种子
+	timens := int64(time.Now().Nanosecond())
+	rand.Seed(timens)
+	// Float32 && Float64 返回 [0.0,1.0) 间的伪随机
+	// Intn 返回 [0,n) 间的伪随机
+	fmt.Printf("伪随机数: %2.6f \n", rand.Float32())
+
+	// byte 类型是 uint8 的别名,字符类型是整型的特殊用例
+	// var bt byte = "A" // byte 类型只有1字节所以不能表示长字节,ASCII 码则只占1字节
+	//	UTF-8:Unicode 至少占用 2字节,则使用 int16 或 int 类型表示,Unicode被称为 Unicode 代码点 或 runes; rune 作为go中的一个类型为 int32 的别名
+	// 长度为4的 16进制Unicode码需要使用 \u 前缀,而长度为8的使用 \U 前缀
+	var ch int = '\u0041'
+	var ch2 int = '\u03B2'
+	var ch3 int = '\U00101234'
+	println("输出格式化字符:")
+	//  %c 用于表示字符；当和字符配合使用时，%v 或 %d 会输出用于表示该字符的整数；%U 输出格式为 U+hhhh 的字符串
+	fmt.Printf("%d - %d - %d\n", ch, ch2, ch3)  // integer
+	fmt.Printf("%c - %c - %c\n", ch, ch2, ch3)  // character
+	fmt.Printf("%X - %X - %X\n", ch, ch2, ch3)  // UTF-8 bytes
+	fmt.Printf("%U - %U - %U \n", ch, ch2, ch3) // UTF-8 code point
+
+	/*
+		包 unicode 包含了一些针对测试字符的非常有用的函数（其中 ch 代表字符）：
+		判断是否为字母：unicode.IsLetter(ch)
+		判断是否为数字：unicode.IsDigit(ch)
+		判断是否为空白符号：unicode.IsSpace(ch)
+	*/
 }
 
 // 数值的安全转换
